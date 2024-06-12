@@ -1,6 +1,7 @@
 const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
+const axios = require("axios");
 
 app.use(bodyParser.json());
 
@@ -56,6 +57,24 @@ app.get("/orders", (req, res) => {
     });
 });
 
+//get single order
+app.get("/order/:id", (req, res) => {
+  Order.findById(req.params.id).then((order) => {
+    if (order) {
+      //create request to food and cust
+      axios.get("http://localhost:3001/customers/" + order.CustomerID).then((response) => {
+        var orderObject = { CustomerName: response.data.name, foodName: "" };
+        axios.get("http://localhost:3000/food/" + order.FoodID).then((response) => {
+          orderObject.foodName = response.data.name;
+          res.json(orderObject);
+        });
+      });
+    } else {
+      res.send("Invalid order");
+    }
+  });
+});
+
 app.listen(3002, () => {
-  console.log("Customer Server Running on Port 3002!");
+  console.log("Order Server Running on Port 3002!");
 });
