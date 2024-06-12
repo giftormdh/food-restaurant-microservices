@@ -92,5 +92,5 @@ app.delete("/food/:id", (req, res) => {
 });
 
 app.listen(3000, () => {
-  console.log("Server Running on Port 3000!");
+  console.log("Food Server Running on Port 3000!");
 });
